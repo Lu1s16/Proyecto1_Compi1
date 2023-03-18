@@ -1,0 +1,139 @@
+/* 1. Package e importaciones */
+package Analizadores; 
+import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+
+/* 2. Codigo para el parser, variables, metodos */
+parser code 
+{:
+    //Clases, objetos, variables, lista, etc... en sintaxis java
+    
+    //Creo una lista de tipo String llamada 'resultados', donde guardare cada uno de los resultados analizados
+    public List<String> resultados = new ArrayList<String>();
+
+    //arraylist para los arboles
+    public ArrayList<Arboles> Arboles = new ArrayList<>();
+
+    public void syntax_error(Symbol s) {
+        System.out.println("Error sintactico: " + s.value + ", Linea " + (s.left+1) + " columna " + (s.right+1));
+    }
+    
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.out.println("Error Sintactico NR: " + s.value + ", Linea " + (s.left+1) + " columna " + (s.right+1));
+    }
+
+:} 
+
+/* 3. Terminales */
+terminal  PR_CONJ;
+terminal  DP, SEP, LLA, LLC, POR, PC, COMA;
+terminal String QUESTION, SUMA, AST, PT, BARRA;
+terminal String ID, CARACTER;
+terminal  NUMBERS, MIN, MAY, ASCII, CADENA, FLECHA;
+
+/* 4. No Terminales */
+non terminal ini;
+non terminal iconjuntos;
+non terminal iexpresiones;
+non terminal ilexemas;
+non terminal notacion;
+non terminal notacion2;
+non terminal expresion;
+
+
+/* 5. Precedencias */
+
+
+/* 6. Producciones */
+
+start with ini;
+ini::= LLA iconjuntos iexpresiones POR POR ilexemas LLC;
+
+//para conjuntos
+iconjuntos ::= iconjuntos PR_CONJ DP ID FLECHA notacion PC
+                | PR_CONJ DP ID FLECHA notacion PC        
+;
+
+//para notacion
+notacion ::= MIN SEP MIN
+             | MAY SEP MAY
+             | NUMBERS SEP NUMBERS
+             | notacion2
+;
+
+notacion2 ::= notacion2 COMA MAY
+              | notacion2 COMA MIN
+              | notacion2 COMA NUMBERS
+              | notacion2 COMA ASCII
+              | MAY
+              | MIN
+              | NUMBERS
+              | ASCII
+;
+
+//Para expresiones
+iexpresiones ::=  iexpresiones ID FLECHA expresion:a PC {:
+                    System.out.println("--------------Se creo un arbol");
+                    Arboles.add(new Arboles((Nodo_arbol)a));
+    
+                  :}
+                 | ID FLECHA expresion:a PC {:
+                    System.out.println("--------------Se creo un arbol");
+                    Arboles.add(new Arboles((Nodo_arbol)a));
+                 :}
+;
+
+expresion ::=  PT:a expresion:b expresion:c {:
+                    Nodo_arbol padre = new Nodo_arbol(a);
+                    padre.setLeft((Nodo_arbol)b);
+                    padre.setRight((Nodo_arbol)c);
+                    RESULT = padre;
+
+               :}
+               | BARRA:a expresion:b expresion:c {:
+                    Nodo_arbol padre = new Nodo_arbol(a);
+                    padre.setLeft((Nodo_arbol)b);
+                    padre.setRight((Nodo_arbol)c);
+                    RESULT = padre;
+
+               :}
+               | SUMA:a expresion:b {:
+                    Nodo_arbol padre = new Nodo_arbol(a);
+                    padre.setLeft((Nodo_arbol)b);
+                    RESULT = padre;             
+
+               :}
+               | AST:a expresion:b {:
+                    Nodo_arbol padre = new Nodo_arbol(a);
+                    padre.setLeft((Nodo_arbol)b);
+                    RESULT = padre;
+
+               :}
+               | QUESTION:a expresion:b {:
+                    Nodo_arbol padre = new Nodo_arbol(a);
+                    padre.setLeft((Nodo_arbol)b);
+                    RESULT = padre;
+
+               :}
+               | CARACTER:a {:
+                    Nodo_arbol hoja = new Nodo_arbol(a);
+                    hoja.setHoja(true);
+                    RESULT = hoja;
+               :}
+               | LLA ID:a LLC {:
+                    Nodo_arbol hoja = new Nodo_arbol(a);
+                    hoja.setHoja(true);
+                    RESULT = hoja;
+
+                :}
+;
+
+
+//Almacenar lexemas con diccionario almacenar ID y ID
+ilexemas ::= ilexemas ID DP CADENA PC
+              | ID DP CADENA PC
+;
