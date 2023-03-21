@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import Analizadores.Lexico;
+
 /**
  *
  * @author Luis
@@ -29,6 +31,7 @@ public class Arboles {
     //public ArrayList<Nodo_tabla> tabla2;
     
     
+    
 
     public Arboles(Nodo_arbol arbol) {
         Nodo_arbol raiz = new Nodo_arbol(".");
@@ -38,19 +41,29 @@ public class Arboles {
         raiz.setLeft(arbol);
         this.arbol = raiz;
         ArrayList<Nodo_tabla> tabla = new ArrayList<Nodo_tabla>();
+        //tabla siguientes para graficar
         ArrayList<Nodo_tabla> tabla2 = new ArrayList<Nodo_tabla>();
+        
+        
         ArrayList<Nodo_lista_transicion> lista_transicion = new ArrayList<Nodo_lista_transicion>();
-       
+        //lista transiciones para graficar
+        ArrayList<Nodo_lista_transicion> lista_transicion2 = new ArrayList<Nodo_lista_transicion>();
         
         
         
         //Mostrar codigo graphviz para arbol
-        //System.out.println(Mostrar_arbol(this.arbol, contador));
-        //Crea arbol y datos para la tabla
-        Mostrar_arbol(this.arbol, contador);
+        //System.out.println("-----------------Arbol--------------");
+        String reporte_arbol = "digraph G {\n";
+        reporte_arbol+=Mostrar_arbol(this.arbol, contador);
+        reporte_arbol+="\n}";
+        //System.out.println(reporte_arbol);
         
-        //Mostrar codigo graphviz para tabla
-        String graphviz_tabla = "nodo[style=filled, shape=plaintext, label=<\n"+
+        
+        
+        //Mostrar codigo graphviz para tabla siguientes
+        //System.out.println("----------------siguientes-----------");
+        String reporte_tabla_siguientes = "digraph G{\n";
+        reporte_tabla_siguientes+= "nodo[style=filled, shape=plaintext, label=<\n"+
                 "<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n"
                 + "<TR>\n"+
                 "   <TD>Simbolo</TD>\n"+
@@ -58,15 +71,33 @@ public class Arboles {
                 "   <TD>Siguientes</TD>\n"+
                 "</TR>\n";
         
-        
-        
         tabla2 = Mostrar_tabla(this.arbol, tabla);
-        graphviz_tabla+=Reporte_tabla(tabla2);
-        graphviz_tabla+="</TABLE>>]\n";
+        reporte_tabla_siguientes+=Reporte_tabla(tabla2);
+        reporte_tabla_siguientes+="</TABLE>>]\n\n}";
+        //System.out.println(reporte_tabla_siguientes);
         
-        Tabla_transicion(this.arbol, tabla2, lista_transicion);
         
-        //System.out.println(graphviz_tabla);
+        //lista de transiciones para el reporte de tabla transiciones
+        //y para el afd
+        lista_transicion2 = Tabla_transicion(this.arbol, tabla2, lista_transicion);
+        
+        //Graficar tabla transiciones
+        //System.out.println("------------------Transiciones-------------------");
+        String reporte_tabla_transiciones = "digraph G {\n";
+        reporte_tabla_transiciones+=Graficar_tabla_transiciones(lista_transicion2, tabla2);
+        reporte_tabla_transiciones+="\n}";
+        //System.out.println(reporte_tabla_transiciones);
+        
+        //Graficar AFD
+        //System.out.println("-------------------AFD-----------------------");
+        String reporte_afd = "digraph G {\n";
+        reporte_afd+=Graficar_AFD(lista_transicion2);
+        reporte_afd+="\n}";
+        //System.out.println(reporte_afd);
+        
+        Reportes nuevo_reporte = new Reportes(reporte_arbol, reporte_tabla_siguientes, reporte_tabla_transiciones, reporte_afd, "");
+        
+        nuevo_reporte.Crear_reportes();
         
         
     
@@ -86,6 +117,7 @@ public class Arboles {
     //}
     
     //public tip_de_variable de retorno
+    //Reporte de arbol
     public String Mostrar_arbol(Nodo_arbol nodo, int padre){
       //System.out.println(this.arbol); 
       
@@ -127,7 +159,7 @@ public class Arboles {
 </TABLE>>
           */
           
-            System.out.println("Nodo_" + orden + " es: " + nodo.getDato() + " y es hoja");
+            //System.out.println("Nodo_" + orden + " es: " + nodo.getDato() + " y es hoja");
             primeros.add(identificador);
             ultimos.add(identificador);
             
@@ -442,9 +474,7 @@ public class Arboles {
                             }  
                 
                         }
-                        
-                        
-                        
+
                         break;
                     }
                 case ".":
@@ -869,14 +899,15 @@ public class Arboles {
         
     }
     
+    //Reporte de tabla siguientes en grapviz
     public String Reporte_tabla(ArrayList<Nodo_tabla> tabla){
         
         String graphviz = "";
         
         for(int i = 0; i<tabla.size(); i++){
             
-            System.out.println("--------------------------size para graficar");
-            System.out.println(tabla.size());
+            //System.out.println("--------------------------size para graficar");
+            //System.out.println(tabla.size());
             
             String Simbolo_string = "";
             String siguientes_string = "";
@@ -936,7 +967,8 @@ public class Arboles {
         
     }
     
-    public void Tabla_transicion(Nodo_arbol nodo, ArrayList<Nodo_tabla> tabla, ArrayList<Nodo_lista_transicion> lista_transicion){
+    
+    public ArrayList<Nodo_lista_transicion> Tabla_transicion(Nodo_arbol nodo, ArrayList<Nodo_tabla> tabla, ArrayList<Nodo_lista_transicion> lista_transicion){
         
         
         //Obtener datos para el estado S0 y almacenarlo
@@ -978,8 +1010,8 @@ public class Arboles {
             
             //LIsta temporal con los numeros del estado actual
             lista_temp_numeros_estados = lista_estados.get(i).getNumeros();
-            System.out.println("------Veces que entra a la lista con los numeros del estado actual-----");
-            System.out.println(lista_estados.get(i).getNumeros());
+            //System.out.println("------Veces que entra a la lista con los numeros del estado actual-----");
+            //System.out.println(lista_estados.get(i).getNumeros());
             
             //Recorrer cada elemento de la tabla
             for(int j = 0; j<tabla.size(); j++){
@@ -1017,7 +1049,7 @@ public class Arboles {
                            
                            if(repetido == false && m == lista_estados.size()-1){
                                Nodo_lista_estados nuevo_nodo_estado2 = new Nodo_lista_estados();
-                               System.out.println("Entra al if cuando no esta repetido------------------------");
+                               //System.out.println("Entra al if cuando no esta repetido------------------------");
                                //creo datos para agregar a lista de estados
                                
                                contador++;
@@ -1089,7 +1121,7 @@ public class Arboles {
                                nuevo_diccionario.put(estado_final, aceptacion);
                                //guardo estado final
                                nuevo_nodo_transicion2.setEstado_final(nuevo_diccionario);
-                               
+                               nuevo_nodo_transicion2.setEstado_final1(estado_final);
                                
                                lista_transicion.add(nuevo_nodo_transicion2);
                                break;
@@ -1114,7 +1146,7 @@ public class Arboles {
             
         }
         
-        System.out.println("--------------Tabla tansiciones------------------");
+        //System.out.println("--------------Tabla tansiciones------------------");
         //for(int h = 0; h<lista_transicion.size(); h++){
         //    System.out.println("-----Datos-----");
         //    System.out.println(lista_transicion.get(h).getEstado_inicial());
@@ -1122,81 +1154,281 @@ public class Arboles {
         //    System.out.println(lista_transicion.get(h).getSimobolo());
         //}
         
+     
+        return lista_transicion;
         
-        //Graficar
         
         
-        String graphviz_tabla_t = "nodo[style=filled, shape=plaintext, label=<\n"+
+    }
+    
+    //Reporte de grafica de tabla de transiciones
+    public String Graficar_tabla_transiciones(ArrayList<Nodo_lista_transicion> lista_transicion, ArrayList<Nodo_tabla> tabla){
+        
+        String graphviz_tabla = "nodo[style=filled, shape=plaintext, label=<\n"+
                 "<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n"
                 + "<TR>\n"+
                 "<TD>Estado</TD>\n";
-                //las demas celdas las creo con los terminales
-                
         
+        //lista de simbolos repetidos
         ArrayList<String> simbolos_repetidos = new ArrayList<String>();
-
         for(int c = 0; c<tabla.size(); c++){
-            
             simbolos_repetidos.add(tabla.get(c).getDato());
-        }
-        
-                
-                
-        Set<String> simbolos_sin_repetir = new HashSet<>(simbolos_repetidos);        
-        ArrayList<String> listaSinRepetidos = new ArrayList<>(simbolos_sin_repetir);        
-        
-        
-        Map<String, Integer> posiciones_en_celdas = new HashMap<>();
-        ArrayList<Map<String, Integer>> lista_posiciones = new ArrayList<Map<String, Integer>>();
-        
-        int contador_posiciones = 1;
-        for(int c = 0; c<listaSinRepetidos.size(); c++){
             
-            if(listaSinRepetidos.get(c).equals("#")){
-                     
-            } else {
-                posiciones_en_celdas.put(listaSinRepetidos.get(c), contador_posiciones);
-                lista_posiciones.add(posiciones_en_celdas);
-                graphviz_tabla_t+="<TD>"+ listaSinRepetidos.get(c) +"</TD>\n";
-                
-                contador++;
-            }
-     
         }
         
-        graphviz_tabla_t+="<TD>Aceptacion</TD>\n</TR>\n"; 
+        Set<String> simbolos_sin_repetir = new HashSet<>(simbolos_repetidos);
+        
+        //lista de simbolos sin repetirse incluyendo "#"
+        ArrayList<String> lista_simbolos = new ArrayList<>(simbolos_sin_repetir);
+        
+        //variable para posicion en tabla
+        int posicion = 0;
+        
+        //Lista de diccionarios con su posicion y simbolo
+        ArrayList<Map<Integer, String>> lista_posiciones = new ArrayList<Map<Integer, String>>();
+        
+        //contiene para "#" aunque no se grafique
+        for(int c = 0; c<lista_simbolos.size(); c++){
+            //Creo el diccionario para la posicion en celda
+            //contiene la posicion y simbolo
+            
+            if(lista_simbolos.get(c).equals("#")){
+                
+            } else {
+                Map<Integer, String> posicion_en_celda = new HashMap<>();
+            
+                posicion_en_celda.put(posicion, lista_simbolos.get(c));
+                lista_posiciones.add(posicion_en_celda);
+                posicion++;
+                
+            }
+            
+            
+            
+            
+        }
+        
+        //Grafico simbolos en la tabla
+        for(int c = 0; c<lista_simbolos.size(); c++){
+            
+            //No coloco # en la tabla
+            if(lista_simbolos.get(c).equals("#")){
+                
+            } else {
+                graphviz_tabla+="<TD>"+ lista_simbolos.get(c) + "</TD>\n";
+            }
+            
+        }
+        
+        graphviz_tabla+="<TD>Aceptacion</TD>\n</TR>\n";
+        
+        //lista de celdas, para agregar un estado si existe
+        //en esa celda.
+        ArrayList<String> lista_celdas = new ArrayList<String>();
+        //La ultima celda es de # que equivale al de aceptacion
+        for(int c = 0; c<lista_simbolos.size(); c++){
+            
+            if(c == lista_simbolos.size()-1){
+                String celda = "<TD>false</TD>\n";
+                lista_celdas.add(celda);
+                
+            } else {
+                String celda = "<TD></TD>\n";
+                lista_celdas.add(celda);
+            }
+            
+            
+            
+        }
         
         
-        //demas estados
+        //Grafico el resto de estados
+        int contador_estados = 0;
+        
+        boolean bandera = false;
+        
+        //Estado actual
         int contador_str1 = 0;
-        int contador_str2 = 1;
+        String str = "S"+contador_str1;
         
-        String str1 = "S"+contador_str1;
-        String str2 = "S"+contador_str2;
+        //Recorro la lista de transiciones
+        for(int c = 0; c<lista_transicion.size(); c++){
+            
+            //Verifico si el estaodo  no a cambiado
+            if(str.equals(lista_transicion.get(c).getEstado_inicio())){
+                
+                
+                //Recorro la lista de posiciones
+                for(int e = 0; e<lista_posiciones.size(); e++){
+                    
+                    //Comparo que el simbolo de la posicion es igual al de la transicion
+                    if(lista_posiciones.get(e).get(e).equals(lista_transicion.get(c).getSimobolo())){
+                        
+                        String celda = "<TD>" + lista_transicion.get(c).getEstado_final1()+"</TD>";
+                        lista_celdas.set(e, celda);
+                        
+                    }
+                    
+                }
+                //Colocar la celda como true
+                //if(lista_transicion.get(c).getEstado_final().get(lista_transicion.get(c).getEstado_inicio() != null)){
+                if(lista_transicion.get(c).getEstado_inicio().equals(lista_transicion.get(c).getEstado_final1()) && lista_transicion.get(c).getEstado_final().get(lista_transicion.get(c).getEstado_final1())){
+                    for(int n = 0; n<lista_celdas.size(); n++){
+                        
+                        if(n == lista_celdas.size()-1){
+                            String celda = "<TD>True</TD>";
+                            lista_celdas.set(n, celda);
+                        }
+                    }
+                }
+                    
+                    
+                    
+                //}
+                
+                
+                
+                
+            } else {
+                String celdas = "<TR>\n<TD>"+ str +"</TD>\n";
+                
+                for(int k = 0; k<lista_celdas.size(); k++){
+                    celdas+=lista_celdas.get(k);
+                           
+                }
+                
+                celdas+="</TR>\n\n";
+                
+                //aumento el estado
+                contador_str1++;
+                str = "S"+contador_str1;
+                
+                graphviz_tabla+=celdas;
+                
+                //reseteo las celdas
+                for(int f = 0; f < lista_celdas.size(); f++){
+                    
+                    if(f == lista_celdas.size()-1){
+                        lista_celdas.set(f, "<TD>false</TD>");
+                        
+                    } else {
+                        lista_celdas.set(f, "<TD></TD>");
+                        
+                    }
+                    
+                    
+                    
+                }
+                
+                bandera = true;
+                
+                
+                
+            }
+            
+            if(bandera){
+                
+                for(int m = 0; m<lista_posiciones.size(); m++){
+                    
+                    if(lista_posiciones.get(m).get(m).equals(lista_transicion.get(c).getSimobolo())){
+                        
+                        String celda = "<TD>" + lista_transicion.get(c).getEstado_final1()+"</TD>";
+                        lista_celdas.set(m, celda);
+                    }
+                    
+                }
+                
+                //Colocar la celda como true
+                if(lista_transicion.get(c).getEstado_inicio().equals(lista_transicion.get(c).getEstado_final1()) && lista_transicion.get(c).getEstado_final().get(lista_transicion.get(c).getEstado_final1())){
+                    for(int n = 0; n<lista_celdas.size(); n++){
+                        
+                        if(n == lista_celdas.size()-1){
+                            String celda = "<TD>True</TD>";
+                            lista_celdas.set(n, celda);
+                        }
+                    }
+                }
+                
+                bandera = false;
+                
+                
+            }
+            
+            //ultima transicion
+            if(c == lista_transicion.size()-1){
+                
+                String celdas = "<TR>\n<TD>"+ str +"</TD>\n";
+                
+                for(int k = 0; k<lista_celdas.size(); k++){
+                    celdas+=lista_celdas.get(k);
+                    
+                }
+                
+                celdas+="</TR>\n\n";
+                
+                contador_str1++;
+                str = "S"+contador_str1;
+                
+                graphviz_tabla+=celdas;
+                
+                
+            }
+            
+            
+            
+        }
+        
+        graphviz_tabla+="</TABLE>>]";
+        //System.out.println("------------Tabla de transiciones-----------");
+        //System.out.println(graphviz_tabla);
+        return graphviz_tabla;
+        
+    }
+    
+    //Reporte de AFD
+    public String Graficar_AFD(ArrayList<Nodo_lista_transicion> lista_transicion){
+        
+        
+        String graphviz = "rankdir=LR;\n";
+        String conexiones = "";
+        String aceptacion = "";
         
         for(int c = 0; c<lista_transicion.size(); c++){
-            graphviz_tabla_t+="<TR>\n";
             
-            if(str1.equals(str2)){
-                contador_str1++;
-                contador_str2++;
-                str1 = "S"+contador_str1;
-                str2 = "S"+contador_str2;
-            } else {
+            if(lista_transicion.get(c).getSimobolo().equals("#")){
                 
-                //Creo celdas para el html
+            } else {
+                if(lista_transicion.get(c).getEstado_final().get(lista_transicion.get(c).getEstado_final1())){
+                
+                    //S2 [color="#ff0000"]
+                    aceptacion+=lista_transicion.get(c).getEstado_final1()+"[color=\"#ff0000\"]\n";
+                
+                }
+                
+                //Verifica si el simbolo tiene "_"
+                if(lista_transicion.get(c).getSimobolo().contains("\"")){
+                    conexiones+=lista_transicion.get(c).getEstado_inicio()+"->"+lista_transicion.get(c).getEstado_final1()+"[label="+ lista_transicion.get(c).getSimobolo() +"]\n";
+                    
+                    
+                } else if(lista_transicion.get(c).getSimobolo().contains("\\n")){
+                    conexiones+=lista_transicion.get(c).getEstado_inicio()+"->"+lista_transicion.get(c).getEstado_final1()+"[label=\"\\\" \\\"\"]\n";
+                } else {
+                    conexiones+=lista_transicion.get(c).getEstado_inicio()+"->"+lista_transicion.get(c).getEstado_final1()+"[label=\""+ lista_transicion.get(c).getSimobolo() +"\"]\n";
+                    
+                }
+
+                
             }
             
-          
+            
+            
             
         }
         
-        
-        
-        graphviz_tabla_t+="</TABLE>>]";
-        System.out.println(graphviz_tabla_t);
-        
-        
+        graphviz+=aceptacion+conexiones;
+        //System.out.println("---------------Grafo AFD--------------");
+        //System.out.println(graphviz);
+        return graphviz;
         
     }
     

@@ -18,6 +18,17 @@ public class Nodo_lista_transicion {
     Map<String, ArrayList<Integer>> estado_inicial = new HashMap<>();
     String simobolo;
     Map<String, Boolean> estado_final = new HashMap<>();
+    String estado_final1;
+
+    public String getEstado_final1() {
+        return estado_final1;
+    }
+
+    public void setEstado_final1(String estado_final1) {
+        this.estado_final1 = estado_final1;
+    }
+    
+    
 
     public Map<String, ArrayList<Integer>> getEstado_inicial() {
         return estado_inicial;

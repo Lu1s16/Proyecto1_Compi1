@@ -16,6 +16,9 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import Analizadores.Arboles;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -28,7 +31,11 @@ public class Interfaz extends javax.swing.JFrame {
      */
     public Interfaz() {
         initComponents();
+        
     }
+    
+    public String archivo_actual;
+    public String archivo_guardar;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -43,6 +50,10 @@ public class Interfaz extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         text = new javax.swing.JTextArea();
         Open = new javax.swing.JButton();
+        Guardar_como = new javax.swing.JButton();
+        Nuevo_archivo = new javax.swing.JButton();
+        Guardar = new javax.swing.JButton();
+        nombre_archivo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,6 +75,27 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
+        Guardar_como.setText("Guardar como");
+        Guardar_como.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Guardar_comoActionPerformed(evt);
+            }
+        });
+
+        Nuevo_archivo.setText("Nuevo archivo");
+        Nuevo_archivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Nuevo_archivoActionPerformed(evt);
+            }
+        });
+
+        Guardar.setText("Guardar");
+        Guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GuardarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -71,26 +103,40 @@ public class Interfaz extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(110, 110, 110)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Nuevo_archivo)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Open, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(nombre_archivo, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGap(35, 35, 35)
+                                .addComponent(Guardar_como)
+                                .addGap(32, 32, 32)
+                                .addComponent(Guardar))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(140, 140, 140)
-                        .addComponent(Read))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(Open)))
-                .addContainerGap(214, Short.MAX_VALUE))
+                        .addGap(28, 28, 28)
+                        .addComponent(Read)))
+                .addContainerGap(240, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(Open)
+                .addContainerGap(11, Short.MAX_VALUE)
+                .addComponent(nombre_archivo)
+                .addGap(38, 38, 38)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Open)
+                    .addComponent(Guardar_como)
+                    .addComponent(Nuevo_archivo)
+                    .addComponent(Guardar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(Read)
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addGap(45, 45, 45))
         );
 
         pack();
@@ -99,14 +145,28 @@ public class Interfaz extends javax.swing.JFrame {
     private void ReadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReadActionPerformed
         // TODO add your handling code here:
         
-        
- 
-        
         try {   
                       
         //Se ejecuta el lexico y sintactico.
-        Sintactico sintactico =new Sintactico(new Lexico(new BufferedReader( new StringReader(text.getText()))));
+        String contenido = text.getText();
+        StringReader SR = new StringReader(contenido);
+        BufferedReader BR = new BufferedReader(SR);
+        Lexico lexico = new Lexico(BR);
+        
+        Sintactico sintactico = new Sintactico(lexico);
         sintactico.parse();
+        
+        if(lexico.lista_error.isEmpty()){
+            System.out.println("No hay errores");
+            
+ 
+        } else {
+            
+            System.out.println("Hay errores lexicos");
+        }
+        
+        
+        
         //System.out.println(sintactico.resultados);
         String result = "";
         
@@ -144,15 +204,19 @@ public class Interfaz extends javax.swing.JFrame {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "olc");
         chooser.setFileFilter(filter);
+        //archivo_actual = chooser.getSelectedFile().getAbsolutePath();
         
         //Muestra la ventana
         int resultado = chooser.showOpenDialog(null);
         
+
         if (resultado == JFileChooser.APPROVE_OPTION){
             File archivo = chooser.getSelectedFile();
-               
-            
-            
+            archivo_actual = chooser.getSelectedFile().getName();
+            archivo_guardar = chooser.getSelectedFile().getAbsolutePath();
+            nombre_archivo.setText(archivo_actual);
+            System.out.println(archivo_guardar);
+ 
             try {
                 FileReader fr = new FileReader(archivo);
                 BufferedReader br = new BufferedReader(fr);
@@ -191,6 +255,123 @@ public class Interfaz extends javax.swing.JFrame {
         
     }//GEN-LAST:event_OpenActionPerformed
 
+    private void Guardar_comoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Guardar_comoActionPerformed
+        // TODO add your handling code here:
+        
+        if(evt.getActionCommand().equals("Guardar como")){
+            //System.out.println("Guardar como");
+            JFileChooser selector_archivos = new JFileChooser();
+            selector_archivos.setFileFilter(new FileNameExtensionFilter("archivos OLC(.olc)", "olc"));
+            int opcion = selector_archivos.showSaveDialog(this);
+            if (opcion == JFileChooser.APPROVE_OPTION) {
+                archivo_actual = selector_archivos.getSelectedFile().getName();
+                archivo_guardar = selector_archivos.getSelectedFile().getAbsolutePath()+".olc";
+                
+                
+                if(!archivo_actual.toLowerCase().endsWith(".olc")){
+                    archivo_actual+=".olc";
+                }
+                nombre_archivo.setText(archivo_actual);
+                //Obtengo el contenido del textArea
+                String contenido = text.getText();
+                try {
+                    //Escribo el conenido en un archivo
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(archivo_actual));
+                    writer.write(contenido);
+                    writer.close();
+                    JOptionPane.showMessageDialog(this, "Archivo guardado exitosamente");
+                } catch (IOException ex){
+                    JOptionPane.showMessageDialog(this, "Error al guardar el archivo: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_Guardar_comoActionPerformed
+
+    private void Nuevo_archivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Nuevo_archivoActionPerformed
+        // TODO add your handling code here:
+        
+        JFileChooser selector_archivos = new JFileChooser();
+        selector_archivos.setDialogTitle("Crear nuevo archivo");
+        selector_archivos.setFileFilter(new FileNameExtensionFilter("archivos OLC(.olc)", "olc"));
+        int opcion = selector_archivos.showSaveDialog(this);
+        
+        if(opcion == JFileChooser.APPROVE_OPTION){
+            archivo_actual = selector_archivos.getSelectedFile().getName();
+            
+            
+            if(!archivo_actual.toLowerCase().endsWith(".olc")){
+                archivo_actual+=".olc";
+            }
+            //ruta completa con extension
+            archivo_guardar = selector_archivos.getSelectedFile().getAbsolutePath()+".olc";
+            System.out.println(archivo_guardar);
+            nombre_archivo.setText(archivo_actual);
+            
+            text.setText("");
+            String contenido = "";
+            
+            try {
+                
+                //Escribo el conenido en un archivo
+                BufferedWriter writer = new BufferedWriter(new FileWriter(archivo_actual));
+                writer.write(contenido);
+                writer.close();
+                JOptionPane.showMessageDialog(this, "Archivo creado correctamente");
+            } catch (IOException ex){
+                JOptionPane.showMessageDialog(this, "Error al crear archivo: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        }
+        
+    }//GEN-LAST:event_Nuevo_archivoActionPerformed
+
+    private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
+        // TODO add your handling code here:
+        
+        //Contiene la ruta completa
+        System.out.println(archivo_guardar);
+        //Contiene solo el nombre
+        nombre_archivo.setText(archivo_actual);
+        
+        
+        File archivo = new File(archivo_guardar);
+        System.out.println(archivo_guardar);
+        //Borro el archivo
+        archivo.delete();
+            System.out.println("borrado");
+            //Almaceno el nuevo_contenido
+            String nuevo_contenido = text.getText();
+            try {
+                
+                
+                File file = new File(archivo_guardar);
+                
+                
+                if(!file.exists()){
+                    file.createNewFile();
+                }
+                
+                FileWriter fw = new FileWriter(file);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(nuevo_contenido);
+                bw.close();
+                
+        
+               
+                JOptionPane.showMessageDialog(this, "Se guardaron cambios");
+            
+            } catch (IOException ex){
+                JOptionPane.showMessageDialog(this, "Error al guardar el archivo: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+                
+        
+        
+        
+        
+        
+        
+    }//GEN-LAST:event_GuardarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -222,14 +403,19 @@ public class Interfaz extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Interfaz().setVisible(true);
+                
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Guardar;
+    private javax.swing.JButton Guardar_como;
+    private javax.swing.JButton Nuevo_archivo;
     private javax.swing.JButton Open;
     private javax.swing.JButton Read;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel nombre_archivo;
     private javax.swing.JTextArea text;
     // End of variables declaration//GEN-END:variables
 }
