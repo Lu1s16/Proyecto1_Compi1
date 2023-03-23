@@ -267,7 +267,7 @@ public class Lexico implements java_cup.runtime.Scanner {
   /* user code: */
     //Codigo de usuario en sintaxis java
     //Agregar clases, variables, arreglos, objetos etc...
-    ArrayList<Nodo_error> lista_error = new ArrayList<Nodo_error>();
+    public ArrayList<Nodo_error> lista_error = new ArrayList<Nodo_error>();
 
 
   /**

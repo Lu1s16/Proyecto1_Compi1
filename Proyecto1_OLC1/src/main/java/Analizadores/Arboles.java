@@ -44,7 +44,18 @@ public class Arboles {
         //tabla siguientes para graficar
         ArrayList<Nodo_tabla> tabla2 = new ArrayList<Nodo_tabla>();
         
+        //--------------------datos para el afnd---------
+        //lista de nodos_afnd
+        ArrayList<nodo_afnd> lista_nodos = new ArrayList<nodo_afnd>();
         
+        
+        //Lista de simbolos de hojas
+        ArrayList<String> lista_hojas = new ArrayList<String>();
+        
+        int verificador = 0;
+        
+        
+        //------------------Fin datos para afnd-------------------
         ArrayList<Nodo_lista_transicion> lista_transicion = new ArrayList<Nodo_lista_transicion>();
         //lista transiciones para graficar
         ArrayList<Nodo_lista_transicion> lista_transicion2 = new ArrayList<Nodo_lista_transicion>();
@@ -94,6 +105,10 @@ public class Arboles {
         reporte_afd+=Graficar_AFD(lista_transicion2);
         reporte_afd+="\n}";
         //System.out.println(reporte_afd);
+        
+        //Graficar AFND
+        Graficar_afnd(this.arbol, lista_nodos, lista_nodos, lista_hojas, verificador);
+        
         
         Reportes nuevo_reporte = new Reportes(reporte_arbol, reporte_tabla_siguientes, reporte_tabla_transiciones, reporte_afd, "");
         
@@ -1429,6 +1444,395 @@ public class Arboles {
         //System.out.println("---------------Grafo AFD--------------");
         //System.out.println(graphviz);
         return graphviz;
+        
+    }
+    
+    public void Graficar_afnd(Nodo_arbol nodo, ArrayList<nodo_afnd> lista_nodos_temp, ArrayList<nodo_afnd> lista_general, ArrayList<String> lista_hojas, int verificador){
+        
+        if(nodo != null){
+            
+            Graficar_afnd(nodo.left, lista_nodos_temp, lista_general, lista_hojas, verificador);
+            Graficar_afnd(nodo.right, lista_nodos_temp, lista_general, lista_hojas, verificador);
+            
+            
+            
+            if(nodo.isHoja()){
+                
+                
+                //Agrego el simbolo de la hoja a la lista_hojas
+                String simbolo_hoja = nodo.getDato();
+                lista_hojas.add(simbolo_hoja);
+                
+            } else {
+                
+                //----------------nodo con "|"------------------
+                if(nodo.getDato().equals("|")){
+                    
+                    verificador++;
+                    switch (verificador) {
+                    
+                        case 1:
+                            //para crear grafo a|b
+                            if(lista_general.isEmpty() && lista_nodos_temp.isEmpty()){
+                                //crea estados normal
+                                //Crea el primer grafo de a|b
+                                int pos_last = lista_hojas.size()-1;
+                                String ultimo_dato = lista_hojas.get(pos_last);
+                                
+                                //obtengo el ultimo de la lista_hojas
+                                String valor_a = ultimo_dato;
+                                
+                                //elimina la ultima posicion
+                                lista_hojas.remove(pos_last);
+                                
+                                pos_last = lista_hojas.size()-1;
+                                ultimo_dato = lista_hojas.get(pos_last);
+                                
+                                //obtengo el ultimo de la lista_hojas
+                                String valor_b = ultimo_dato;
+                                
+                                //Elimina la ultima posicion
+                                lista_hojas.remove(pos_last);
+                                
+                                //Creo el grafo con el valor a y b
+                                int contador = 0;
+                                String estado_inicial = "";
+                                
+                                contador++;
+                                String estado_final = "";
+                                
+                                String valor = "";
+                                
+                                for(int c = 1; c<7; c++){
+                                    nodo_afnd nuevo_nodo = new nodo_afnd();
+                                    
+                                    //valor a
+                                    if(c == 2){
+                                        estado_inicial = "S"+contador;
+                                        contador++;
+                                        estado_final = "S"+contador;
+                                        
+                                        valor = valor_a;
+                                        
+                                        nuevo_nodo.setSimbolo_final(estado_final);
+                                        nuevo_nodo.setSimbolo_inicio(estado_inicial);
+                                        nuevo_nodo.setLabel(valor);
+                                        
+                                        lista_nodos_temp.add(nuevo_nodo);
+                                        
+                                    //valor b
+                                    } else if (c == 5){
+                                        estado_inicial = "S"+contador;
+                                        contador++;
+                                        estado_final = "S"+contador;
+                                        
+                                        valor = valor_b;
+                                        
+                                        nuevo_nodo.setSimbolo_final(estado_final);
+                                        nuevo_nodo.setSimbolo_inicio(estado_inicial);
+                                        nuevo_nodo.setLabel(valor);
+                                        
+                                        lista_nodos_temp.add(nuevo_nodo);
+                                     
+                                    //epsilon que va hacia abajo
+                                    } else if (c == 4){
+                                        contador++;
+                                        valor = "epsilon";
+                                        estado_inicial = lista_nodos_temp.get(0).getSimbolo_inicio();
+                                        estado_final = "S"+contador;
+                                    
+                                        nuevo_nodo.setSimbolo_final(estado_final);
+                                        nuevo_nodo.setSimbolo_inicio(estado_inicial);
+                                        nuevo_nodo.setLabel(valor);
+                                        
+                                        lista_nodos_temp.add(nuevo_nodo);
+                                        
+                                    //transicion epsilon final
+                                    } else if(c == 6){
+                                        estado_inicial = "S"+contador;
+                                        estado_final = lista_nodos_temp.get(2).getSimbolo_final();
+                                        valor = "epsilon";
+                                        
+                                        nuevo_nodo.setSimbolo_final(estado_final);
+                                        nuevo_nodo.setSimbolo_inicio(estado_inicial);
+                                        nuevo_nodo.setLabel(valor);
+                                        
+                                        lista_nodos_temp.add(nuevo_nodo);
+                                        
+                                    //transiciones epsilon   
+                                    } else {
+                                        valor = "epsilon";
+                                        
+                                        estado_inicial = "S"+contador;
+                                
+                                        contador++;
+                                        estado_final = "S"+contador;
+                                        
+                                        
+                                        nuevo_nodo.setSimbolo_final(estado_final);
+                                        nuevo_nodo.setSimbolo_inicio(estado_inicial);
+                                        nuevo_nodo.setLabel(valor);
+                                    
+                                        lista_nodos_temp.add(nuevo_nodo);
+                                        
+                                    }
+
+                                    
+                                }
+                                //-------------Fin de creacion de grafo a|b
+                                
+                                
+                                
+                                
+                            } else {
+                                //se obtiene el ultimo estado de la lista general
+                                //para ser el inicio de este grafo
+                            }
+                            
+                            
+                            break;
+                    
+                        case 2:
+                            //para crear grafo a|b|c
+                            int pos_last = lista_hojas.size()-1;
+                            String ultimo_dato = lista_hojas.get(pos_last);        
+                            String valor_c = ultimo_dato;
+                            
+                            
+                            if(lista_general.isEmpty()){
+                                int contador = 0;
+                                String estado_inicial = "S"+contador;
+                                
+                                int sumador = 1;
+                                //Aumento una posicion a los nodos de la lista_nodos_temp
+                                for(int c = 0; c<lista_nodos_temp.size(); c++){
+                                    
+                                    
+                                    if(c ==3){
+                                        int reset = 1;
+                                        lista_nodos_temp.get(c).setSimbolo_inicio("S"+reset);
+                                        contador++;
+                                        lista_nodos_temp.get(c).setSimbolo_final("S"+contador);
+                                        
+                                        
+                                    } else if(c == 4){
+                                        lista_nodos_temp.get(c).setSimbolo_inicio("S"+sumador);
+                                    
+                                        sumador++;
+                                        lista_nodos_temp.get(c).setSimbolo_final("S"+sumador);
+                                    
+                                        
+                                    } else if(c == 5){
+                                        lista_nodos_temp.get(c).setSimbolo_inicio("S"+sumador);
+                                        String reset2 = lista_nodos_temp.get(2).getSimbolo_final();
+                                        lista_nodos_temp.get(c).setSimbolo_final(reset2);
+                                        
+                                    } else {
+                                        lista_nodos_temp.get(c).setSimbolo_inicio("S"+sumador);
+                                    
+                                        sumador++;
+                                        lista_nodos_temp.get(c).setSimbolo_final("S"+sumador);
+                                    
+                                        
+                                    }
+                                    
+                                    
+                                    
+                                }
+                                //--------------Fin de aumento de nodos
+                                
+                                
+                                //insertar nuevos nodos
+                                contador = 0;
+                                String estado_final = "";
+                                for(int c = 1; c<5; c++){
+                                    nodo_afnd nuevo_nodo = new nodo_afnd();
+                                    
+                                    //transicion hacia arriba
+                                    if(c == 1){
+                                        //ArrayList<String> list2 = (ArrayList<String>)list.clone();
+                                        ArrayList<nodo_afnd> lista_temporal = (ArrayList<nodo_afnd>)lista_nodos_temp.clone();
+                                        
+                                        lista_nodos_temp.clear();
+                                        
+                                        estado_inicial = "S"+contador;
+                                        estado_final = lista_temporal.get(0).getSimbolo_inicio();
+                                        
+                                        nuevo_nodo.setSimbolo_inicio(estado_inicial);
+                                        nuevo_nodo.setSimbolo_final(estado_final);
+                                        nuevo_nodo.setLabel("epsilon");
+                                        
+                                        lista_nodos_temp.add(nuevo_nodo);
+                                        String valor = "";
+                                        
+                                        //agregar demas estados a la lista_nodos_temp
+                                        for(int d = 0; d<lista_temporal.size(); d++){
+                                            estado_inicial = lista_temporal.get(d).getSimbolo_inicio();
+                                            estado_final = lista_temporal.get(d).getSimbolo_final();
+                                            valor = lista_temporal.get(d).getLabel();
+                                            
+                                            nuevo_nodo.setSimbolo_inicio(estado_inicial);
+                                            nuevo_nodo.setSimbolo_final(estado_final);
+                                            nuevo_nodo.setLabel(valor);
+                                            
+                                            lista_nodos_temp.add(nuevo_nodo);
+               
+                                        } 
+                                    
+                                    //transicion hacia abajo
+                                    } else if(c == 2){
+                                        /*        String exampleString = "This is a String";
+
+                                                    String lastCharacter = exampleString.substring(exampleString.length() - 1);
+
+                                                    char[] lastChar = lastCharacter.toCharArray();
+
+                                                    System.out.println("Last char: "+lastChar[lastChar.length - 1]);*/
+                                        
+                                        int last_posicion = lista_nodos_temp.size()-1;
+                                        String simbolo_final = lista_nodos_temp.get(last_posicion).getSimbolo_inicio();
+                                        String last_character = simbolo_final.substring(simbolo_final.length()-1);
+                                        
+                                        int last_number = Integer.parseInt(last_character);
+                                        
+                                        /*
+                                                    int number = Integer.parseInt(str);
+                                                    System.out.println(number); // output = 25
+                                        */
+                                        int estado_mayor = last_number+1;
+                                        
+                                        estado_inicial = lista_nodos_temp.get(0).getSimbolo_inicio();
+                                        estado_final = "S"+estado_mayor;
+                                        String valor = "epsilon";
+                                        
+                                        nuevo_nodo.setSimbolo_inicio(estado_inicial);
+                                        nuevo_nodo.setSimbolo_final(estado_final);
+                                        nuevo_nodo.setLabel(valor);
+                                            
+                                        lista_nodos_temp.add(nuevo_nodo);
+                                        
+                                        
+                                        
+                                    } else if(c == 3){
+                                        int last_posicion = lista_nodos_temp.size()-1;
+                                        String simbolo_final = lista_nodos_temp.get(last_posicion).getSimbolo_final();
+                                        String last_character = simbolo_final.substring(simbolo_final.length()-1);
+                                        
+                                        int last_number = Integer.parseInt(last_character);
+                                        
+                                        estado_inicial = simbolo_final;
+                                        
+                                        int estado_siguiente = last_number+1;
+                                        estado_final = "S"+estado_siguiente;
+                                        
+                                        String valor = valor_c;
+                                        
+                                        nuevo_nodo.setSimbolo_inicio(estado_inicial);
+                                        nuevo_nodo.setSimbolo_final(estado_final);
+                                        nuevo_nodo.setLabel(valor);
+                                            
+                                        lista_nodos_temp.add(nuevo_nodo);
+                                        
+                                        
+                                    }
+                                    
+                                    
+                                    
+                                }
+                                
+                                
+                                
+                            }
+                            
+                            
+                            break;
+                    
+                        case 3:
+                            //para crear grafo a|b|c|d
+                            break;
+                    
+                        case 4:
+                            //para crear grafo a|b|c|d|e
+                            break;
+                        default:
+                            break;                        
+                    }
+                    
+                    
+                    if(lista_general.isEmpty()){
+                        //si lista esta vacia solo actualizo nodos de la lista_temp_nodos
+                        
+                        
+                    } else {
+                        //Caso contrario el estado inicio sera el ultimo estado de la lista general
+                        //Actualizo datos de lista_temp_nodos
+                    }
+                    
+                
+                //----------------nodo con "+"------------------
+                } else if (nodo.getDato().equals("+")){
+                    //Para crear grafo a+
+                    
+                    if(nodo.left.getDato().equals("|")){
+                        //Añado grafo a|b al grafo a+
+                        
+                    } else {
+                        //solo creo el grafo a con el valor de la lista_hojas
+                        
+                        if(lista_general.isEmpty()){
+                            //Creo nodos para el grafo +
+                            //lo agrego a la lista_general
+                            
+                        } else {
+                            //Extraigo el ultimo de lista_general
+                            //Creo el grafo + para ese elmento
+                            //Agego los nodos a lista_nodos_temp
+                        }
+                        
+                    }
+                    
+                //----------------nodo con "."------------------   
+                } else if (nodo.getDato().equals(".")){
+                    //Creo grafo .
+                    
+                    if (nodo.right.getDato().equals("+")){
+                        //Agego grafo +
+                        //valor a sera el ultimo de lista_hojas
+                        //el estado inicial sera el primero de la lista_temp_nodos
+                        //Actualizo los nodos de lista_temp_nodos
+                        
+                    } else if(nodo.right.getDato().equals(".")){
+                        //Agego grafo .
+                        
+                        if(lista_general.isEmpty()){
+                            //Agarro el ultimo de la lista_hoja
+                            //Creo el estado 0
+                            //Aumento los nodos de la lista_temp_nodos
+                            //Creo nodos
+                            //Actualizo lista_temp_nodos
+                            
+                            
+                        } else {
+                            //Conecto el ultimo estado de la lista_general y lo conecto al segundo de la lista_temp_nodos
+                        
+                        }
+                        
+                    }
+                    
+                //----------------nodo con "?"------------------    
+                } else if(nodo.getDato().equals("?")){
+                
+                    
+                    
+                //----------------nodo con "*"------------------    
+                } else if(nodo.getDato().equals("*")){
+                    
+                }
+                
+            }
+            
+        }
+        
         
     }
     
