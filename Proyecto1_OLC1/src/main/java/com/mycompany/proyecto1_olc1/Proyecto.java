@@ -396,7 +396,7 @@ public class Proyecto extends javax.swing.JFrame {
             
         } catch (Exception ex) {
             
-            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Proyecto.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error fatal en compilación de entrada." + ex);
         }
         
