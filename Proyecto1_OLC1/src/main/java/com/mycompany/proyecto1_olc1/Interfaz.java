@@ -154,21 +154,12 @@ public class Interfaz extends javax.swing.JFrame {
         
         
         
-        
-        //System.out.println(sintactico.resultados);
-        String result = "";
-        
-        //Extraer conjuntos
-        for (int i = 0; i < sintactico.resultados.size(); i++) {
-               result += sintactico.resultados.get(i) + '\n';
-        }
-        //this.jTextArea2.setText(result);
-        
+       
         
         
         
         System.out.println("Hello world");
-        System.out.println(result);
+        
         
        
         

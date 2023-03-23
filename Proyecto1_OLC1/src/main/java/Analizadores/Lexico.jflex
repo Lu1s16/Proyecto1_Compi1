@@ -1,8 +1,14 @@
 package Analizadores;
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
 
 %%
 /* 2. Configuraciones para el analisis (Opciones y Declaaciones) */
+%{
+    //Codigo de usuario en sintaxis java
+    //Agregar clases, variables, arreglos, objetos etc...
+    public ArrayList<Nodo_error> errores = new ArrayList<Nodo_error>();
+%}
 
 //Directivas
 %class Lexico
@@ -26,7 +32,7 @@ reservada = CONJ
 
 
 //Espacios
-BLANCOS=[ \t\r\n]+
+BLANCOS=[ \t\r]+
 
 //Simbolos
 flecha = "-" {BLANCOS}* ">"
@@ -69,7 +75,8 @@ cadena = \" ([^\"] | "\\\"")+ \"
 {comentariosimple} {  System.out.println("Reconocio comentario simple: "+yytext()); }
 
 //espacios
-{BLANCOS} {} 
+{BLANCOS} {}
+\n {yychar=1;}
 
 //Palabras reservadas
 {reservada} {  System.out.println("Reconocio PR: "+yytext()); 
@@ -156,4 +163,12 @@ cadena = \" ([^\"] | "\\\"")+ \"
 . {
     //Aqui se debe guardar los valores (yytext(), yyline, yychar ) para posteriormente generar el reporte de errores Léxicos.
     System.out.println("Este es un error lexico: "+yytext()+ ", en la linea: "+yyline+", en la columna: "+yychar);
+
+    Nodo_error nuevo_error = new Nodo_error();
+
+    nuevo_error.setSimbolo_error(yytext());
+    nuevo_error.setLinea(yyline);
+    nuevo_error.setColumna(yychar);
+
+    errores.add(nuevo_error);
 }

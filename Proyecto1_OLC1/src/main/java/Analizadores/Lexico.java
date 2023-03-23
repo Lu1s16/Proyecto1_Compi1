@@ -2,6 +2,7 @@
 
 package Analizadores;
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
 
 
 /**
@@ -58,14 +59,14 @@ public class Lexico implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\1\1\2\2\1\3\4\4\1\5\1\6\1\7"+
-    "\1\4\1\3\1\4\1\10\1\11\1\12\1\13\1\14"+
-    "\1\15\1\16\1\17\1\20\1\21\1\22\2\23\1\0"+
-    "\1\24\1\25\4\0\1\26\1\23\2\25\3\0\1\26"+
-    "\1\27\1\30\1\0\1\27\1\31";
+    "\1\0\1\1\2\2\1\3\2\4\1\5\2\4\1\6"+
+    "\1\7\1\10\1\4\1\3\1\4\1\11\1\12\1\13"+
+    "\1\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23"+
+    "\2\24\1\0\1\25\1\26\4\0\1\27\1\24\2\26"+
+    "\3\0\1\27\1\30\1\31\1\0\1\30\1\32";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[48];
+    int [] result = new int[49];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -90,15 +91,16 @@ public class Lexico implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\43\0\106\0\151\0\214\0\257\0\43\0\322"+
-    "\0\365\0\43\0\u0118\0\151\0\151\0\u013b\0\u015e\0\43"+
+    "\0\0\0\43\0\106\0\151\0\214\0\257\0\43\0\43"+
+    "\0\322\0\365\0\43\0\u0118\0\151\0\151\0\u013b\0\u015e"+
     "\0\43\0\43\0\43\0\43\0\43\0\43\0\43\0\43"+
-    "\0\43\0\43\0\151\0\u0181\0\257\0\43\0\u01a4\0\u01c7"+
-    "\0\u01ea\0\u020d\0\u0230\0\43\0\u0253\0\u0276\0\43\0\u0299"+
-    "\0\u02bc\0\u02df\0\u0230\0\43\0\151\0\u0302\0\u0230\0\43";
+    "\0\43\0\43\0\43\0\151\0\u0181\0\257\0\43\0\u01a4"+
+    "\0\u01c7\0\u01ea\0\u020d\0\u0230\0\43\0\u0253\0\u0276\0\43"+
+    "\0\u0299\0\u02bc\0\u02df\0\u0230\0\43\0\151\0\u0302\0\u0230"+
+    "\0\43";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[48];
+    int [] result = new int[49];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -121,21 +123,21 @@ public class Lexico implements java_cup.runtime.Scanner {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\2\1\3\3\4\1\5\1\6\1\7\2\5\1\10"+
-    "\1\7\1\11\1\7\1\12\1\13\1\14\1\4\1\15"+
-    "\1\16\1\17\1\14\1\7\1\20\1\21\1\22\1\23"+
-    "\1\24\1\25\1\26\1\27\1\30\1\31\1\32\45\0"+
-    "\1\33\1\34\2\33\12\0\4\33\2\0\1\33\16\0"+
-    "\4\33\12\0\4\33\2\0\1\33\22\0\1\5\2\0"+
-    "\2\5\36\0\1\35\1\0\1\36\2\35\43\0\1\37"+
-    "\43\0\1\40\46\0\1\13\23\0\23\41\1\0\1\42"+
-    "\1\41\1\43\14\41\23\0\1\44\1\0\2\44\15\0"+
-    "\2\33\1\45\1\33\12\0\4\33\2\0\1\33\15\0"+
-    "\10\37\1\46\1\47\31\37\13\50\1\51\27\50\23\43"+
-    "\1\44\1\52\41\43\1\53\1\52\41\43\1\54\1\52"+
-    "\16\43\1\0\3\33\1\55\12\0\4\33\2\0\1\33"+
-    "\26\0\1\47\31\0\13\50\1\56\36\50\1\0\33\50"+
-    "\23\43\1\57\1\52\16\43\7\50\1\60\33\50";
+    "\1\2\1\3\3\4\1\5\1\6\1\7\1\5\1\10"+
+    "\1\11\1\7\1\12\1\7\1\13\1\14\1\15\1\4"+
+    "\1\16\1\17\1\20\1\15\1\7\1\21\1\22\1\23"+
+    "\1\24\1\25\1\26\1\27\1\30\1\31\1\32\1\33"+
+    "\45\0\1\34\1\35\2\34\12\0\4\34\2\0\1\34"+
+    "\16\0\4\34\12\0\4\34\2\0\1\34\22\0\1\5"+
+    "\2\0\1\5\37\0\1\36\1\0\1\37\1\36\44\0"+
+    "\1\40\43\0\1\41\46\0\1\14\23\0\23\42\1\0"+
+    "\1\43\1\42\1\44\14\42\23\0\1\45\1\0\2\45"+
+    "\15\0\2\34\1\46\1\34\12\0\4\34\2\0\1\34"+
+    "\15\0\10\40\1\47\1\50\31\40\13\51\1\52\27\51"+
+    "\23\44\1\45\1\53\41\44\1\54\1\53\41\44\1\55"+
+    "\1\53\16\44\1\0\3\34\1\56\12\0\4\34\2\0"+
+    "\1\34\26\0\1\50\31\0\13\51\1\57\36\51\1\0"+
+    "\33\51\23\44\1\60\1\53\16\44\7\51\1\61\33\51";
 
   private static int [] zzUnpackTrans() {
     int [] result = new int[805];
@@ -176,12 +178,12 @@ public class Lexico implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\1\11\4\1\1\11\2\1\1\11\5\1\13\11"+
+    "\1\0\1\11\4\1\2\11\2\1\1\11\5\1\13\11"+
     "\2\1\1\0\1\11\1\1\4\0\1\11\2\1\1\11"+
     "\3\0\1\1\1\11\1\1\1\0\1\1\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[48];
+    int [] result = new int[49];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -255,6 +257,11 @@ public class Lexico implements java_cup.runtime.Scanner {
    * otherwise, it will have a value of 0.
    */
   private int zzFinalHighSurrogate = 0;
+
+  /* user code: */
+    //Codigo de usuario en sintaxis java
+    //Agregar clases, variables, arreglos, objetos etc...
+    public ArrayList<Nodo_error> errores = new ArrayList<Nodo_error>();
 
 
   /**
@@ -629,150 +636,163 @@ public class Lexico implements java_cup.runtime.Scanner {
           case 1: 
             { //Aqui se debe guardar los valores (yytext(), yyline, yychar ) para posteriormente generar el reporte de errores Léxicos.
     System.out.println("Este es un error lexico: "+yytext()+ ", en la linea: "+yyline+", en la columna: "+yychar);
+
+    Nodo_error nuevo_error = new Nodo_error();
+
+    nuevo_error.setSimbolo_error(yytext());
+    nuevo_error.setLinea(yyline);
+    nuevo_error.setColumna(yychar);
+
+    errores.add(nuevo_error);
             } 
             // fall through
-          case 26: break;
+          case 27: break;
           case 2: 
             { System.out.println("Reconocio mayuscula: "+yytext()); 
           return new Symbol(sym.MAY,yyline,yychar,yytext());
             } 
             // fall through
-          case 27: break;
+          case 28: break;
           case 3: 
             { 
             } 
             // fall through
-          case 28: break;
+          case 29: break;
           case 4: 
             { System.out.println("Reconocio ascii: "+yytext()); 
           return new Symbol(sym.ASCII,yyline,yychar,yytext());
             } 
             // fall through
-          case 29: break;
+          case 30: break;
           case 5: 
+            { yychar=1;
+            } 
+            // fall through
+          case 31: break;
+          case 6: 
             { System.out.println("Reconocio barra: "+yytext()); 
           return new Symbol(sym.BARRA,yyline,yychar,yytext());
             } 
             // fall through
-          case 30: break;
-          case 6: 
+          case 32: break;
+          case 7: 
             { System.out.println("Reconocio digitos: "+yytext()); 
           return new Symbol(sym.NUMBERS,yyline,yychar,yytext());
             } 
             // fall through
-          case 31: break;
-          case 7: 
+          case 33: break;
+          case 8: 
             { System.out.println("Reconocio minuscula: "+yytext()); 
           return new Symbol(sym.MIN,yyline,yychar,yytext());
             } 
             // fall through
-          case 32: break;
-          case 8: 
+          case 34: break;
+          case 9: 
             { System.out.println("Reconocio DP: "+yytext()); 
           return new Symbol(sym.DP,yyline,yychar,yytext());
             } 
             // fall through
-          case 33: break;
-          case 9: 
+          case 35: break;
+          case 10: 
             { System.out.println("Reconocio COMA: "+yytext()); 
           return new Symbol(sym.COMA,yyline,yychar,yytext());
             } 
             // fall through
-          case 34: break;
-          case 10: 
+          case 36: break;
+          case 11: 
             { System.out.println("Reconocio SEP: "+yytext()); 
           return new Symbol(sym.SEP,yyline,yychar,yytext());
             } 
             // fall through
-          case 35: break;
-          case 11: 
+          case 37: break;
+          case 12: 
             { System.out.println("Reconocio LLA: "+yytext()); 
           return new Symbol(sym.LLA,yyline,yychar,yytext());
             } 
             // fall through
-          case 36: break;
-          case 12: 
+          case 38: break;
+          case 13: 
             { System.out.println("Reconocio LLC: "+yytext()); 
           return new Symbol(sym.LLC,yyline,yychar,yytext());
             } 
             // fall through
-          case 37: break;
-          case 13: 
+          case 39: break;
+          case 14: 
             { System.out.println("Reconocio POR: "+yytext()); 
           return new Symbol(sym.POR,yyline,yychar,yytext());
             } 
             // fall through
-          case 38: break;
-          case 14: 
+          case 40: break;
+          case 15: 
             { System.out.println("Reconocio PC: "+yytext()); 
           return new Symbol(sym.PC,yyline,yychar,yytext());
             } 
             // fall through
-          case 39: break;
-          case 15: 
+          case 41: break;
+          case 16: 
             { System.out.println("Reconocio question: "+yytext()); 
           return new Symbol(sym.QUESTION,yyline,yychar,yytext());
             } 
             // fall through
-          case 40: break;
-          case 16: 
+          case 42: break;
+          case 17: 
             { System.out.println("Reconocio suma: "+yytext()); 
           return new Symbol(sym.SUMA,yyline,yychar,yytext());
             } 
             // fall through
-          case 41: break;
-          case 17: 
+          case 43: break;
+          case 18: 
             { System.out.println("Reconocio asterisco: "+yytext()); 
           return new Symbol(sym.AST,yyline,yychar,yytext());
             } 
             // fall through
-          case 42: break;
-          case 18: 
+          case 44: break;
+          case 19: 
             { System.out.println("Reconocio punto: "+yytext()); 
           return new Symbol(sym.PT,yyline,yychar,yytext());
             } 
             // fall through
-          case 43: break;
-          case 19: 
+          case 45: break;
+          case 20: 
             { System.out.println("Reconocio identificador: "+yytext()); 
           return new Symbol(sym.ID,yyline,yychar,yytext());
             } 
             // fall through
-          case 44: break;
-          case 20: 
+          case 46: break;
+          case 21: 
             { System.out.println("Reconocio flecha: "+yytext()); 
           return new Symbol(sym.FLECHA,yyline,yychar,yytext());
             } 
             // fall through
-          case 45: break;
-          case 21: 
+          case 47: break;
+          case 22: 
             { System.out.println("Reconocio comentario simple: "+yytext());
             } 
             // fall through
-          case 46: break;
-          case 22: 
+          case 48: break;
+          case 23: 
             { System.out.println("Reconocio caracter: "+yytext()); 
           return new Symbol(sym.CARACTER,yyline,yychar,yytext());
             } 
             // fall through
-          case 47: break;
-          case 23: 
+          case 49: break;
+          case 24: 
             { System.out.println("Reconocio cadena: "+yytext()); 
           return new Symbol(sym.CADENA,yyline,yychar,yytext());
             } 
             // fall through
-          case 48: break;
-          case 24: 
+          case 50: break;
+          case 25: 
             { System.out.println("Reconocio PR: "+yytext()); 
           return new Symbol(sym.PR_CONJ,yyline,yychar,yytext());
             } 
             // fall through
-          case 49: break;
-          case 25: 
+          case 51: break;
+          case 26: 
             { System.out.println("Reconocio Comentario multilinea: "+yytext());
             } 
             // fall through
-          case 50: break;
+          case 52: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
