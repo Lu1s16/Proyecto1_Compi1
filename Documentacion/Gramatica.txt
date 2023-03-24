@@ -1,0 +1,38 @@
+ini::= LLA iconjuntos iexpresiones POR POR ilexemas LLC;
+
+
+iconjuntos ::= iconjuntos PR_CONJ DP ID FLECHA notacion PC
+                | PR_CONJ DP ID FLECHA notacion PC        
+
+
+notacion ::= MIN SEP MIN
+             | MAY SEP MAY
+             | NUMBERS SEP NUMBERS
+             | notacion2
+
+
+notacion2 ::= notacion2 COMA MAY
+              | notacion2 COMA MIN
+              | notacion2 COMA NUMBERS
+              | notacion2 COMA ASCII
+              | MAY
+              | MIN
+              | NUMBERS
+              | ASCII
+
+
+iexpresiones ::=  iexpresiones ID FLECHA expresion PC
+                 | ID FLECHA expresion PC
+
+
+expresion ::=  PT expresion expresion
+               | BARRA expresion expresion
+               | SUMA expresion
+               | AST expresion
+               | QUESTION expresion
+               | CARACTER
+               | LLA ID LLC
+
+
+ilexemas ::= ilexemas ID DP CADENA PC
+              | ID DP CADENA PC
